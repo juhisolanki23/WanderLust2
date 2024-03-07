@@ -5,14 +5,18 @@ const Listing = require("../models/listing.js");
 const {isLoggedIn , isOwner, validateListing} = require("../middleware.js");
 
 const listingController = require("../controllers/listings.js");
-
 router
 .route("/")
 .get(wrapAsync(listingController.index))
-.post(
-     isLoggedIn,
+/*.post(
+   isLoggedIn,
     validateListing,
-    wrapAsync(listingController.createListing));
+    wrapAsync(listingController.createListing));*/
+.post((req,res) => {
+   res.send(req.body);
+})
+
+
 
 //new route
 router.get("/new",isLoggedIn, listingController.renderNewForm);
