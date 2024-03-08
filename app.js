@@ -9,13 +9,14 @@ const session = require("express-session");
 const flash = require("connect-flash");
 const passport = require("passport");
 const LocalStrategy = require("passport-local");
-const multer = require("multer");
+
 const User = require("./models/user.js");
-const upload = multer({dest: "uploads/"})
 
 const listingRouter = require("./routes/listing.js");
 const reviewRouter = require("./routes/review.js");
 const userRouter  = require("./routes/user.js")
+const multer = require("multer");
+const upload = multer();
 
 
 
