@@ -1,3 +1,10 @@
+//const Listing = require("../models/listing");
+//const mbxGeocoding = require('@mapbox/mapbox-sdk/services/Geocoding');
+//const mapToken = process.env.MAP_TOKEN;
+//const GeocodingClient = mbxGeocoding({ accessToken: mapToken});
+//const geocodingClient = mbxGeocoding({ accessToken: mapToken });
+//const mbxGeocoding = require("@mapbox/mapbox-sdk/services/geocoding");
+
 const Listing = require("../models/listing");
 //const mbxGeocoding = require('@mapbox/mapbox-sdk/services/Geocoding');
 const mapToken = process.env.MAP_TOKEN;
@@ -5,6 +12,13 @@ const mapToken = process.env.MAP_TOKEN;
 
 //const geocodingClient = mbxGeocoding({ accessToken: mapToken });
 const mbxGeocoding = require("@mapbox/mapbox-sdk/services/geocoding");
+const geocodingClient = mbxGeocoding({accessToken: mapToken})
+
+
+
+
+
+
 
 module.exports.index = async (req, res) => {
     const allListings = await Listing.find({});
@@ -34,7 +48,7 @@ module.exports.showListing = async (req, res) => {
     res.render("listings/show.ejs", { listing });
 }
 
-module.exports.createListing = async (req, res, next) => {
+/*module.exports.createListing = async (req, res, next) => {
   let response  = await mbxGeocoding.forwardGeocode({
         query: req.body.listing.location,
         limit: 1,
@@ -48,7 +62,23 @@ module.exports.createListing = async (req, res, next) => {
    console.log(savedListing);
     req.flash("success", "New Listing Created!");
     res.redirect("/listings");
-}
+}*/
+module.exports.createListing = async (req, res, next) => {
+    let response  = await geocodingClient.forwardGeocode({
+          query: req.body.listing.location,
+          limit: 1,
+        })
+          .send();
+      const newListing = new Listing(req.body.listing);
+      console.log(req.user);
+      newListing.owner = req.user._id;
+      newListing.geometry = response.body.features[0].geometry;
+     let savedListing = await newListing.save();
+     console.log(savedListing);
+      req.flash("success", "New Listing Created!");
+      res.redirect("/listings");
+  }
+
 
 module.exports.renderEditForm = async (req, res) => {
     let { id } = req.params;

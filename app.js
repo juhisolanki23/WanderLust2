@@ -28,6 +28,8 @@ const upload = multer();
 app.use(upload.none());
 
 const dbUrl = process.env.ATLASDB_URL;
+//const dbUrl = "mongodb://127.0.0.1:27017/wonderlust";
+
 
 main().then(() => {
     console.log("connected to DB!");
